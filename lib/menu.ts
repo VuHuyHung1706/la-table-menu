@@ -13,6 +13,8 @@ export type Dish = {
   ingredients: Ingredient[];
   /** Unsplash photo id, shot top-down so it crops cleanly to a circle */
   photo: string;
+  /** How far to zoom into the photo so only food (not the original plate) shows. Default 1.32. */
+  zoom?: number;
 };
 
 export const dishes: Dish[] = [
@@ -51,6 +53,7 @@ export const dishes: Dish[] = [
       { name: "Bông cải xanh", icon: "🥦" },
     ],
     photo: "1681821674991-03c40fba40e9",
+    zoom: 1.45,
   },
   {
     id: "pho-bo-tai",
@@ -123,6 +126,7 @@ export const dishes: Dish[] = [
       { name: "Sốt vang đỏ", icon: "🍷" },
     ],
     photo: "1723200295608-fa8efcee6781",
+    zoom: 1.8,
   },
   {
     id: "mi-nuoc-rau-cu",
@@ -141,6 +145,7 @@ export const dishes: Dish[] = [
       { name: "Rau mầm", icon: "🌱" },
     ],
     photo: "1631709497146-a239ef373cf1",
+    zoom: 1.6,
   },
   {
     id: "ca-chien-dau-que",
@@ -159,6 +164,7 @@ export const dishes: Dish[] = [
       { name: "Sốt chanh dây", icon: "🍋" },
     ],
     photo: "1595936126366-6e85b4812ca2",
+    zoom: 1.45,
   },
   {
     id: "bo-tai-chanh",
@@ -177,6 +183,7 @@ export const dishes: Dish[] = [
       { name: "Dầu ô liu", icon: "🫒" },
     ],
     photo: "1675670632673-0f3a77314706",
+    zoom: 1.7,
   },
   {
     id: "bo-kho-thao-moc",
@@ -195,6 +202,7 @@ export const dishes: Dish[] = [
       { name: "Rau thơm", icon: "🌿" },
     ],
     photo: "1636474498689-27e2d3ecf8d7",
+    zoom: 1.4,
   },
   {
     id: "khoai-nuong-pho-mai",
@@ -213,6 +221,7 @@ export const dishes: Dish[] = [
       { name: "Kem chua", icon: "🥛" },
     ],
     photo: "1777994505589-75c2028c80fa",
+    zoom: 1.75,
   },
   {
     id: "mi-y-rau-cu",
@@ -231,6 +240,7 @@ export const dishes: Dish[] = [
       { name: "Húng tây", icon: "🌿" },
     ],
     photo: "1777994505580-33478f04fa4a",
+    zoom: 1.8,
   },
 ];
 

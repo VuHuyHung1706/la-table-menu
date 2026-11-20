@@ -28,9 +28,9 @@ function Card({ dish, active, onClick }: { dish: Dish; active: boolean; onClick:
           : "border-line/80 bg-paper/70 hover:border-line hover:bg-paper"
       }`}
     >
-      <span className="plate relative size-14 shrink-0 overflow-hidden rounded-full">
-        <span className="absolute inset-[10%] overflow-hidden rounded-full">
-          <Image src={photoUrl(dish.photo, 200)} alt="" fill sizes="56px" className="scale-[1.18] object-cover" />
+      <span className="plate plate-sm relative size-14 shrink-0 rounded-full">
+        <span className="plate-food absolute inset-[12%] overflow-hidden rounded-full">
+          <Image src={photoUrl(dish.photo, 200)} alt="" fill sizes="56px" style={{ scale: dish.zoom ?? 1.32 }} className="object-cover" />
         </span>
       </span>
       <span className="min-w-0">

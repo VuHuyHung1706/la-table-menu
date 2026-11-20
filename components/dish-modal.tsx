@@ -50,7 +50,7 @@ export function DishModal({ dish, onClose, onAdd }: Props) {
         {/* The plate photo fades out as the circle opens up */}
         <motion.span
           aria-hidden
-          className="pointer-events-none absolute inset-[9%] overflow-hidden rounded-full"
+          className="plate-food pointer-events-none absolute inset-[12%] overflow-hidden rounded-full"
           initial={{ opacity: 1 }}
           animate={{ opacity: 0, transition: { duration: MORPH * 0.45 } }}
         >

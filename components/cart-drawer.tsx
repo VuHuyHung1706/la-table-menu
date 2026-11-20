@@ -92,9 +92,9 @@ export function CartDrawer({ cart, onClose }: { cart: Cart; onClose: () => void 
             <ul className="flex-1 divide-y divide-line overflow-y-auto px-6">
               {cart.items.map(({ dish, qty }) => (
                 <li key={dish.id} className="flex items-center gap-4 py-4">
-                  <span className="plate relative size-14 shrink-0 overflow-hidden rounded-full">
-                    <span className="absolute inset-[10%] overflow-hidden rounded-full">
-                      <Image src={photoUrl(dish.photo, 200)} alt="" fill sizes="56px" className="scale-[1.18] object-cover" />
+                  <span className="plate plate-sm relative size-14 shrink-0 rounded-full">
+                    <span className="plate-food absolute inset-[12%] overflow-hidden rounded-full">
+                      <Image src={photoUrl(dish.photo, 200)} alt="" fill sizes="56px" style={{ scale: dish.zoom ?? 1.32 }} className="object-cover" />
                     </span>
                   </span>
                   <div className="min-w-0 flex-1">

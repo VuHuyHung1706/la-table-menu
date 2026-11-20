@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, type Variants } from "motion/react";
+import { motion, useTransform, type MotionValue, type Variants } from "motion/react";
 import { photoUrl, type Dish } from "@/lib/menu";
 import { EASE, MORPH } from "./motion";
 
@@ -13,35 +13,57 @@ export function PlatePhoto({ dish, sizes, priority }: { dish: Dish; sizes: strin
       fill
       sizes={sizes}
       priority={priority}
-      className="scale-[1.18] object-cover"
+      style={{ scale: dish.zoom ?? 1.32 }}
+      className="object-cover"
     />
   );
 }
 
-function PlateFace({ dish }: { dish: Dish }) {
+/**
+ * The food and the well it sits in. `spin` turns only the food: the plate's glaze,
+ * glints and shadows stay put because the light in the room doesn't move.
+ */
+function PlateFace({ dish, spin }: { dish: Dish; spin?: MotionValue<number> }) {
   return (
-    <span className="absolute inset-[9%] overflow-hidden rounded-full shadow-[inset_0_2px_10px_rgb(0_0_0/0.25)]">
-      <PlatePhoto dish={dish} sizes="(max-width: 768px) 60vw, 360px" priority />
-    </span>
+    <>
+      <span className="plate-food absolute inset-[12%] overflow-hidden rounded-full">
+        <motion.span className="absolute inset-0" style={{ rotate: spin }}>
+          <PlatePhoto dish={dish} sizes="(max-width: 768px) 60vw, 360px" priority />
+        </motion.span>
+      </span>
+      <span className="plate-well pointer-events-none absolute inset-[12%] rounded-full" />
+    </>
   );
 }
 
-/** `instant` skips the fade, used when the plate hands over to or from the dialog. */
+/** `instant` hands the plate over to or from the dialog without waiting for the tray. */
 export type TrayPlateCustom = { instant: boolean };
 
+/** How long the tray takes to carry one plate away and bring the next one round. */
+export const TURN_DURATION = 1.25;
+
+// Plates never fade on the tray: the outgoing one stays solid while the tray carries it
+// up and over the top edge, where it is clipped out of sight. The exit just keeps it
+// mounted until the turn has finished.
 const trayVariants: Variants = {
-  enter: (c: TrayPlateCustom) => ({ opacity: c.instant ? 1 : 0 }),
-  center: { opacity: 1, transition: { duration: 0.35 } },
+  enter: { opacity: 1 },
+  center: { opacity: 1 },
   exit: (c: TrayPlateCustom) =>
     c.instant
       ? { opacity: 0, transition: { duration: 0 } }
-      : { opacity: 0, transition: { duration: 0.4, delay: 0.5, ease: EASE } },
+      : { opacity: [1, 1, 0], transition: { duration: TURN_DURATION, times: [0, 0.98, 1] } },
 };
 
-/** A plate riding on the turning tray. Purely visual: clicks go to the FrontPlate above it. */
-export function TrayPlate({ dish, custom }: { dish: Dish; custom: TrayPlateCustom }) {
+/**
+ * A plate riding on the turning tray. Purely visual: clicks go to the FrontPlate above it.
+ * `turn` is how far the plate has been carried round (tray angle + its slot angle); the
+ * plate body is held upright against it so the lighting stays fixed while the food turns.
+ */
+export function TrayPlate({ dish, custom, turn }: { dish: Dish; custom: TrayPlateCustom; turn: MotionValue<number> }) {
+  const upright = useTransform(turn, (a) => -a);
   return (
     <motion.div
+      style={{ rotate: upright }}
       custom={custom}
       variants={trayVariants}
       initial="enter"
@@ -49,7 +71,7 @@ export function TrayPlate({ dish, custom }: { dish: Dish; custom: TrayPlateCusto
       exit="exit"
       className="plate relative aspect-square w-(--plate) rounded-full"
     >
-      <PlateFace dish={dish} />
+      <PlateFace dish={dish} spin={turn} />
     </motion.div>
   );
 }
@@ -82,7 +104,7 @@ export function FrontPlate({
       style={{ borderRadius: "50%" }}
       onClick={onOpen}
       onLayoutAnimationComplete={onMorphDone}
-      className={`relative block aspect-square w-(--plate) cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-cream ${
+      className={`pointer-events-auto relative block aspect-square w-(--plate) cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-cream ${
         morphing ? "plate" : ""
       }`}
       aria-label={`Xem chi tiết món ${dish.name}`}
