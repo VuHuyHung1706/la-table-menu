@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #f4efe6;
+  --color-paper: #fbf8f3;
+  --color-ink: #2a201a;
+  --color-muted: #8a7c6e;
+  --color-line: #e2d9ca;
+  --color-tile: #f1ebe1;
+  --color-selected: #e7ddcd;
+  --color-accent: #6b4a2f;
+  --color-accent-strong: #553923;
+}
+
+@theme inline {
+  --font-serif: var(--font-cormorant), "Times New Roman", serif;
+  --font-sans: var(--font-be-vietnam), system-ui, sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Small uppercase label used across the page */
+.eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* The dark wooden table the plates sit on */
+/* Wood is lit evenly so it can spin; .tray-light adds the fixed front light on top. */
+.wood {
+  background: #3b2a1e;
+}
+.wood::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.85;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.22' numOctaves='3' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.07 0 0 0 0 0.03 0 0 0 0.9 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 600px 600px;
+}
+
+.tray-light {
+  background:
+    radial-gradient(70% 45% at 50% 100%, rgb(255 214 170 / 0.13), transparent 70%),
+    radial-gradient(closest-side, transparent 80%, rgb(0 0 0 / 0.28) 100%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.25), transparent 85%);
+}
+
+/* Ceramic plate: soft rim plus a drop shadow on the table */
+.plate {
+  background:
+    radial-gradient(circle at 50% 50%, #fffdf9 0 62%, #f3eee6 70%, #fbf8f3 78%, #ece5da 100%);
+  box-shadow:
+    0 28px 50px -18px rgb(20 12 6 / 0.55),
+    0 6px 14px -6px rgb(20 12 6 / 0.35),
+    inset 0 0 0 1px rgb(0 0 0 / 0.04);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
