@@ -18,9 +18,9 @@ import { FrontPlate, TrayPlate, TURN_DURATION } from "./plate";
  * carries the old plate up and over the top edge on one side while the new one comes
  * round from the other; plates, wood grain and all turn together. The plate is only
  * visible within ~78° of the front (beyond that it is above the clipped top edge), so
- * at 150° the old plate has gone just as the new one appears.
+ * at 100° both plates are briefly in view together as they pass.
  */
-const STEP = 150; // degrees between neighbouring slots
+const STEP = 100; // degrees between neighbouring slots; ≥ 44° keeps plates from overlapping
 const TURN_EASE = [0.45, 0, 0.2, 1] as const; // brisk departure, slow settle
 const WOOD = "https://images.unsplash.com/photo-1688127145963-1063f22622a5?w=1600&h=1600&fit=crop&auto=format&q=80";
 
