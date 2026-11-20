@@ -47,7 +47,6 @@ export const TURN_DURATION = 1.25;
 // mounted until the turn has finished.
 const trayVariants: Variants = {
   enter: { opacity: 1 },
-  center: { opacity: 1 },
   exit: (c: TrayPlateCustom) =>
     c.instant
       ? { opacity: 0, transition: { duration: 0 } }
@@ -58,8 +57,19 @@ const trayVariants: Variants = {
  * A plate riding on the turning tray. Purely visual: clicks go to the FrontPlate above it.
  * `turn` is how far the plate has been carried round (tray angle + its slot angle); the
  * plate body is held upright against it so the lighting stays fixed while the food turns.
+ * `lifted` grows it a touch while the pointer is over it.
  */
-export function TrayPlate({ dish, custom, turn }: { dish: Dish; custom: TrayPlateCustom; turn: MotionValue<number> }) {
+export function TrayPlate({
+  dish,
+  custom,
+  turn,
+  lifted,
+}: {
+  dish: Dish;
+  custom: TrayPlateCustom;
+  turn: MotionValue<number>;
+  lifted: boolean;
+}) {
   const upright = useTransform(turn, (a) => -a);
   return (
     <motion.div
@@ -67,7 +77,8 @@ export function TrayPlate({ dish, custom, turn }: { dish: Dish; custom: TrayPlat
       custom={custom}
       variants={trayVariants}
       initial="enter"
-      animate="center"
+      animate={{ opacity: 1, scale: lifted ? 1.03 : 1 }}
+      transition={{ scale: { duration: 0.35, ease: EASE } }}
       exit="exit"
       className="plate relative aspect-square w-(--plate) rounded-full"
     >
@@ -90,11 +101,14 @@ export function FrontPlate({
   morphing,
   onOpen,
   onMorphDone,
+  onHover,
 }: {
   dish: Dish;
   morphing: boolean;
   onOpen: () => void;
   onMorphDone: () => void;
+  /** The tray plate underneath does the visible hover effect. */
+  onHover: (hovering: boolean) => void;
 }) {
   return (
     <motion.button
@@ -104,6 +118,8 @@ export function FrontPlate({
       style={{ borderRadius: "50%" }}
       onClick={onOpen}
       onLayoutAnimationComplete={onMorphDone}
+      onHoverStart={() => onHover(true)}
+      onHoverEnd={() => onHover(false)}
       className={`pointer-events-auto relative block aspect-square w-(--plate) cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-cream ${
         morphing ? "plate" : ""
       }`}

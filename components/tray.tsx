@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, useTransform, type MotionValue } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { Dish } from "@/lib/menu";
 import { MORPH } from "./motion";
 import { FrontPlate, TrayPlate, TURN_DURATION } from "./plate";
@@ -25,12 +25,24 @@ const TURN_EASE = [0.45, 0, 0.2, 1] as const; // brisk departure, slow settle
 const WOOD = "https://images.unsplash.com/photo-1688127145963-1063f22622a5?w=1600&h=1600&fit=crop&auto=format&q=80";
 
 /** One slot on the tray, positioned at its angle and holding the dish's plate. */
-function Slot({ slot, angle, dish, custom }: { slot: number; angle: MotionValue<number>; dish: Dish; custom: { instant: boolean } }) {
+function Slot({
+  slot,
+  angle,
+  dish,
+  custom,
+  lifted,
+}: {
+  slot: number;
+  angle: MotionValue<number>;
+  dish: Dish;
+  custom: { instant: boolean };
+  lifted: boolean;
+}) {
   const turn = useTransform(angle, (a) => a + slot * STEP);
   return (
     <div className="absolute top-1/2 left-1/2 size-0" style={{ transform: `rotate(${slot * STEP}deg)` }}>
       <div className="absolute top-[calc(var(--plate)*0.925)] left-[calc(var(--plate)*-0.5)]">
-        <TrayPlate dish={dish} custom={custom} turn={turn} />
+        <TrayPlate dish={dish} custom={custom} turn={turn} lifted={lifted} />
       </div>
     </div>
   );
@@ -49,6 +61,7 @@ type Props = {
 export function Tray({ dish, slot, modalOpen, returning, onOpen, onReturned }: Props) {
   const angle = useMotionValue(-slot * STEP);
   const reduce = useReducedMotion();
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     const controls = animate(angle, -slot * STEP, reduce ? { duration: 0 } : { duration: TURN_DURATION, ease: TURN_EASE });
@@ -80,14 +93,23 @@ export function Tray({ dish, slot, modalOpen, returning, onOpen, onReturned }: P
 
           <motion.div className="pointer-events-none absolute inset-0" style={{ rotate: angle }}>
             <AnimatePresence initial={false} custom={custom}>
-              {!handOver && <Slot key={slot} slot={slot} angle={angle} dish={dish} custom={custom} />}
+              {!handOver && <Slot key={slot} slot={slot} angle={angle} dish={dish} custom={custom} lifted={hovered} />}
             </AnimatePresence>
           </motion.div>
         </div>
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--plate)*-0.2)] z-10 flex justify-center">
-        {!modalOpen && <FrontPlate dish={dish} morphing={returning} onOpen={onOpen} onMorphDone={onReturned} />}
+        {!modalOpen && <FrontPlate
+            dish={dish}
+            morphing={returning}
+            onOpen={() => {
+              setHovered(false);
+              onOpen();
+            }}
+            onMorphDone={onReturned}
+            onHover={setHovered}
+          />}
       </div>
     </>
   );

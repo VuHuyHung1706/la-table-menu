@@ -145,14 +145,7 @@ export function MenuShowcase() {
               </div>
               <p className="mt-2 text-[11px] text-muted">{dish.tags.join("  ·  ")}</p>
 
-              <div className="mt-5 flex items-center justify-center gap-5">
-                <button
-                  type="button"
-                  onClick={openModal}
-                  className="text-[12px] text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
-                >
-                  Xem nguyên liệu
-                </button>
+              <div className="mt-5 flex items-center justify-center">
                 <button
                   type="button"
                   onClick={openModal}
